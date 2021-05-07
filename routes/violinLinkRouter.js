@@ -1,17 +1,18 @@
 const express = require('express');
+const authenticate = require('../authenticate');
 const ViolinLink = require('../models/violinLinkSchema');
 
 const violinLinkRouter = express.Router();
 
 violinLinkRouter.route('/')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     ViolinLink.find()
     .then(link => {
         res.status(200).json(link)
     })
     .catch(err => next(err));
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
     ViolinLink.create(req.body)
     .then(link => {
         console.log('Link Created ', link);
@@ -19,10 +20,10 @@ violinLinkRouter.route('/')
     })
     .catch(err => next(err));
 })
-.put((req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
     res.status(403).send('PUT operation not supported on /violinlinks');
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     res.status(403).send('DELETE operation not supported on /violinlinks');
 })
 
